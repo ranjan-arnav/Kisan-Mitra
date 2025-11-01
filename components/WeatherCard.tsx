@@ -34,8 +34,35 @@ export default function WeatherCard({ fullView = false, darkMode = false }: Weat
     const user = storage.getUser()
     const location = user?.location || 'Your Location'
     setLoading(true)
+
+    const getGeolocation = () =>
+      new Promise<GeolocationPosition>((resolve, reject) => {
+        if (!('geolocation' in navigator)) {
+          reject(new Error('Geolocation not supported'))
+          return
+        }
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 5 * 60 * 1000,
+        })
+      })
+
     try {
-      const data = await WeatherService.fetchWeather(location)
+      let data: WeatherData
+
+      try {
+        const position = await getGeolocation()
+        data = await WeatherService.fetchWeatherByCoordinates(
+          position.coords.latitude,
+          position.coords.longitude,
+          location
+        )
+      } catch (geoError) {
+        console.warn('Geolocation unavailable, falling back to profile location', geoError)
+        data = await WeatherService.fetchWeather(location)
+      }
+
       setWeather(data)
       setLastUpdated(new Date())
     } catch (error) {
@@ -90,10 +117,10 @@ export default function WeatherCard({ fullView = false, darkMode = false }: Weat
           <Cloud className="text-blue-600" size={32} />
           {getTranslation('crops.weatherToday', currentLang)}
         </h3>
-        <button 
+        <button
           onClick={loadWeather}
           disabled={loading}
-          className={`font-semibold text-lg flex items-center gap-2 disabled:opacity-50 $'text-blue-600 dark:text-blue-400'`}
+          className={`font-semibold text-lg flex items-center gap-2 disabled:opacity-50 text-blue-600 dark:text-blue-400`}
         >
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
           {getTranslation('common.refresh', currentLang)}

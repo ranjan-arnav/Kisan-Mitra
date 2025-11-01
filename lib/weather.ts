@@ -64,10 +64,21 @@ export class WeatherService {
         return this.getDemoData(location)
       }
 
-      // Get coordinates
       const { lat, lon } = await this.getCoordinates(location)
+      return this.fetchWeatherByCoordinates(lat, lon, location)
+    } catch (error) {
+      console.error('Failed to fetch weather:', error)
+      return this.getDemoData(location)
+    }
+  }
 
-      // Fetch current weather and forecast in parallel
+  static async fetchWeatherByCoordinates(lat: number, lon: number, fallbackLocation = 'Your Location'): Promise<WeatherData> {
+    try {
+      if (!this.API_KEY) {
+        console.warn('OpenWeather API key not found, using demo data')
+        return this.getDemoData(fallbackLocation)
+      }
+
       const [currentResponse, forecastResponse, uvResponse] = await Promise.all([
         fetch(`${this.BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${this.API_KEY}&units=metric`),
         fetch(`${this.BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${this.API_KEY}&units=metric`),
@@ -82,27 +93,25 @@ export class WeatherService {
       const forecastData = await forecastResponse.json()
       const uvData = uvResponse.ok ? await uvResponse.json() : { value: 0 }
 
-      // Process current weather
       const current = {
         temp: Math.round(currentData.main.temp),
         condition: this.mapCondition(currentData.weather[0].main),
         humidity: currentData.main.humidity,
-        wind: Math.round(currentData.wind.speed * 3.6), // m/s to km/h
+        wind: Math.round(currentData.wind.speed * 3.6),
         rainfall: currentData.rain?.['1h'] || 0,
         feelsLike: Math.round(currentData.main.feels_like),
         uvIndex: Math.round(uvData.value || 0),
         pressure: currentData.main.pressure,
-        visibility: Math.round(currentData.visibility / 1000), // meters to km
+        visibility: Math.round(currentData.visibility / 1000),
       }
 
-      // Process 5-day forecast (one per day at noon)
       const dailyForecasts = this.processForecast(forecastData.list)
 
       return {
         current,
         forecast: dailyForecasts,
         location: {
-          city: currentData.name,
+          city: currentData.name || fallbackLocation,
           country: currentData.sys.country,
           lat,
           lon,
@@ -110,8 +119,8 @@ export class WeatherService {
         lastUpdated: new Date(),
       }
     } catch (error) {
-      console.error('Failed to fetch weather:', error)
-      return this.getDemoData(location)
+      console.error('Failed to fetch weather by coordinates:', error)
+      return this.getDemoData(fallbackLocation)
     }
   }
 
