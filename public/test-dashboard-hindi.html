@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Onboarding & Go to Dashboard</title>
+</head>
+<body>
+    <h1>Setting up Hindi language and completing onboarding...</h1>
+    <p>Redirecting to dashboard...</p>
+    
+    <script>
+        // Set Hindi language
+    localStorage.setItem('kisanMitraLanguage', 'hi');
+        
+        // Complete onboarding
+    localStorage.setItem('kisanMitraOnboarded', 'true');
+        
+        // Set some sample user data
+    localStorage.setItem('kisanMitraUser', JSON.stringify({
+            name: 'किसान',
+            location: 'दिल्ली',
+            farmSize: '5 एकड़'
+        }));
+        
+        // Redirect to dashboard
+        setTimeout(() => {
+            window.location.href = '/dashboard';
+        }, 1000);
+    </script>
+</body>
+</html>

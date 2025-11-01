@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Language Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .language-btn { 
+            margin: 10px; 
+            padding: 10px 20px; 
+            background: #22c55e; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+        }
+        .info { background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>KisanMitra Language Selection Test</h1>
+    
+    <div class="info">
+        <h3>Test Steps:</h3>
+        <ol>
+            <li>Click a language button below to set the language in localStorage</li>
+            <li>Go back to the main app (localhost:3000)</li>
+            <li>Clear onboarding state by visiting <a href="/reset.html">/reset.html</a></li>
+            <li>Return to main page to see onboarding in selected language</li>
+        </ol>
+    </div>
+
+    <h2>Select Language:</h2>
+    <button class="language-btn" onclick="setLanguage('hi')">Hindi (हिंदी)</button>
+    <button class="language-btn" onclick="setLanguage('te')">Telugu (తెలుగు)</button>
+    <button class="language-btn" onclick="setLanguage('ta')">Tamil (தமிழ்)</button>
+    <button class="language-btn" onclick="setLanguage('kn')">Kannada (ಕನ್ನಡ)</button>
+    <button class="language-btn" onclick="setLanguage('mr')">Marathi (मराठी)</button>
+    <button class="language-btn" onclick="setLanguage('gu')">Gujarati (ગુજરાતી)</button>
+    <button class="language-btn" onclick="setLanguage('pa')">Punjabi (ਪੰਜਾਬੀ)</button>
+    <button class="language-btn" onclick="setLanguage('bn')">Bengali (বাংলা)</button>
+    <button class="language-btn" onclick="setLanguage('or')">Odia (ଓଡ଼ିଆ)</button>
+    <button class="language-btn" onclick="setLanguage('as')">Assamese (অসমীয়া)</button>
+    <button class="language-btn" onclick="setLanguage('en')">English</button>
+
+    <div id="status" class="info" style="display: none;">
+        <h3>Language Set Successfully!</h3>
+        <p>Language has been saved to localStorage. Now:</p>
+        <ol>
+            <li><a href="/reset.html">Clear onboarding state</a></li>
+            <li><a href="/">Go to main app</a></li>
+        </ol>
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            localStorage.setItem('kisanMitraLanguage', lang);
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('status').innerHTML = `
+                <h3>Language Set to: ${lang}</h3>
+                <p>Language has been saved to localStorage. Now:</p>
+                <ol>
+                    <li><a href="/reset.html">Clear onboarding state</a></li>
+                    <li><a href="/">Go to main app</a></li>
+                </ol>
+            `;
+        }
+
+        // Show current language
+    const currentLang = localStorage.getItem('kisanMitraLanguage') || 'en';
+        console.log('Current language:', currentLang);
+    </script>
+</body>
+</html>

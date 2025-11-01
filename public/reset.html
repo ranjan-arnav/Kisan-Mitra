@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset Onboarding</title>
+</head>
+<body>
+    <h1>Resetting Onboarding...</h1>
+    <script>
+    localStorage.removeItem('kisanMitraOnboarded');
+        localStorage.removeItem('language');
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1000);
+    </script>
+</body>
+</html>
