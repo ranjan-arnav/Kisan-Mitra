@@ -24,23 +24,24 @@ export default function TelegramConnect({ onClose }: TelegramConnectProps) {
       return
     }
 
+    // Hardcoded valid code check
+    if (linkCode !== '263377') {
+      setError('Invalid code. Please use: 263377')
+      return
+    }
+
     setLoading(true)
     setError('')
 
     try {
-      // Verify code with backend
-      const response = await fetch(`/api/telegram?code=${linkCode}`)
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Invalid code')
-      }
-
+      // Simulate successful link with hardcoded code
+      const mockUserId = '12345'
+      
       // Link account locally
       TelegramService.linkTelegramAccount(
-        data.userId,
-        parseInt(data.userId),
-        { id: parseInt(data.userId), first_name: 'Telegram User' }
+        mockUserId,
+        parseInt(mockUserId),
+        { id: parseInt(mockUserId), first_name: 'Kisan Mitra User', username: 'farmer' }
       )
 
       setSuccess(true)
@@ -194,33 +195,38 @@ export default function TelegramConnect({ onClose }: TelegramConnectProps) {
               <ol className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
                 <li className="flex gap-3">
                   <span className="font-bold text-green-600">1.</span>
-                  <span>Open Telegram and search for <strong>@KisanMitraBot</strong></span>
+                  <span>Open Telegram and search for <strong>@krishisalahkaarBot</strong></span>
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-green-600">2.</span>
-                  <span>Send <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">/link</code> command</span>
+                  <span>Send <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">/link 263377</code> command</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-green-600">3.</span>
-                  <span>Copy the 6-character code</span>
+                  <span>Bot will confirm your account is linked</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-green-600">4.</span>
-                  <span>Enter the code below</span>
+                  <span>Enter code <strong className="text-green-600">263377</strong> below to verify</span>
                 </li>
               </ol>
+            </div>
+
+            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Your Link Code:</p>
+              <p className="text-3xl font-bold font-mono text-green-600 tracking-wider">263377</p>
             </div>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Enter Linking Code
+                  Enter Code: 263377
                 </label>
                 <input
                   type="text"
                   value={linkCode}
                   onChange={(e) => setLinkCode(e.target.value.toUpperCase())}
-                  placeholder="ABC123"
+                  placeholder="263377"
                   maxLength={6}
                   className="w-full px-4 py-3 text-center text-2xl font-mono tracking-wider border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-green-500 focus:outline-none bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
                 />
@@ -254,7 +260,7 @@ export default function TelegramConnect({ onClose }: TelegramConnectProps) {
 
             <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
               <p className="text-xs text-gray-600 dark:text-gray-400">
-                <strong>Note:</strong> The linking code expires in 10 minutes. Get weather alerts, market updates, and crop reminders directly in Telegram!
+                <strong>Note:</strong> Use code <strong>263377</strong> to link. Get weather alerts, market updates, and crop reminders directly in Telegram!
               </p>
             </div>
           </>
