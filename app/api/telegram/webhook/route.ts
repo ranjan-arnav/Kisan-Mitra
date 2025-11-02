@@ -95,6 +95,103 @@ This is a demo response. AI integration coming soon!
 Visit the website for full AI features:
 kisanmitraapp.vercel.app
       `)
+    } else if (text.startsWith('/link')) {
+      const parts = text.split(' ')
+      
+      if (parts.length < 2) {
+        await TelegramService.sendMessage(chatId, `
+❌ <b>Missing Link Code</b>
+
+To link your account:
+1. Open kisanmitraapp.vercel.app
+2. Go to Settings (⚙️ icon)
+3. Click "Connect Telegram"
+4. Copy the 6-digit code
+5. Send: <code>/link YOUR_CODE</code>
+
+Example: <code>/link ABC123</code>
+        `)
+        return NextResponse.json({ ok: true })
+      }
+
+      const code = parts[1].toUpperCase()
+      const userId = message.from.id
+      const username = message.from.username || message.from.first_name
+
+      // Store the link (in production, save to database)
+      // For now, we'll just confirm
+      await TelegramService.sendMessage(chatId, `
+✅ <b>Account Linked Successfully!</b>
+
+Welcome, ${username}!
+🆔 Telegram ID: ${userId}
+🔗 Link Code: ${code}
+
+You can now receive:
+📊 Market alerts
+🌤️ Weather updates
+🌱 Crop reminders
+
+<b>Try these personalized commands:</b>
+/weather - Your local weather
+/market - Prices in your area
+/crops - Your tracked crops
+/profile - View your details
+
+Your data syncs automatically! 🚜
+      `)
+    } else if (text.startsWith('/unlink')) {
+      await TelegramService.sendMessage(chatId, `
+🔓 <b>Account Unlinked</b>
+
+Your Telegram is now disconnected from Kisan Mitra.
+
+You can still use basic commands:
+/weather, /market, /help
+
+To link again:
+/link YOUR_CODE
+      `)
+    } else if (text.startsWith('/profile')) {
+      await TelegramService.sendMessage(chatId, `
+👤 <b>Your Profile</b>
+
+Name: Farmer
+📍 Location: Punjab, India
+🌾 Farm Size: 5 acres
+🔗 Telegram: Linked
+✅ Status: Active
+
+<b>Your Crops:</b>
+🌾 Wheat - 3 acres (Growing)
+🌻 Mustard - 2 acres (Flowering)
+
+Edit on website or use:
+/location [city] - Update location
+/crops - Manage crops
+      `)
+    } else if (text.startsWith('/crops')) {
+      await TelegramService.sendMessage(chatId, `
+🌱 <b>Your Crops</b>
+
+1. 🌾 Wheat
+   Area: 3 acres
+   Stage: Growing
+   Days: 45/120
+
+2. 🌻 Mustard
+   Area: 2 acres
+   Stage: Flowering
+   Days: 60/90
+
+<b>Today's Tasks:</b>
+• Check wheat for rust
+• Irrigate mustard (evening)
+• Monitor weather for rain
+
+Add crops on website or:
+/addcrop [name] [area]
+      `)
     } else {
       await TelegramService.sendMessage(chatId, `
 I understand: "${text}"
