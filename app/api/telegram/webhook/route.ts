@@ -118,6 +118,21 @@ Example: <code>/link ABC123</code>
       const userId = message.from.id
       const username = message.from.username || message.from.first_name
 
+      // Check if code is valid (hardcoded for demo)
+      if (code !== '263377') {
+        await TelegramService.sendMessage(chatId, `
+❌ <b>Invalid Link Code</b>
+
+The code "${code}" is not recognized.
+
+Please use: <code>/link 263377</code>
+
+Or get a fresh code from:
+kisanmitraapp.vercel.app → Settings → Connect Telegram
+        `)
+        return NextResponse.json({ ok: true })
+      }
+
       // Store the link (in production, save to database)
       // For now, we'll just confirm
       await TelegramService.sendMessage(chatId, `
