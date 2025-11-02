@@ -29,6 +29,7 @@ import InputFinder from '@/components/InputFinder'
 import CropRecommendation from '@/components/CropRecommendation'
 import VoiceAssistant from '@/components/VoiceAssistant'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import TelegramConnect from '@/components/TelegramConnect'
 import { storage } from '@/lib/storage'
 import { getTranslation, getCurrentLanguage, Language } from '@/lib/i18n'
 import { GeminiService } from '@/lib/gemini'
@@ -39,6 +40,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('home')
   const [showAIChat, setShowAIChat] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  const [showTelegramConnect, setShowTelegramConnect] = useState(false)
   const [aiInitialMessage, setAiInitialMessage] = useState<string>('')
   const [currentLang, setCurrentLang] = useState<Language>('en')
   const [darkMode, setDarkMode] = useState(false)
@@ -633,6 +635,25 @@ Tip must be practical, season-aware if possible, and include an actionable next 
 
               <div className={`rounded-2xl px-4 py-3 ${darkMode ? 'bg-gray-900/60' : 'bg-gray-50'}`}>
                 <p className={`text-sm font-semibold mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  Telegram Bot
+                </p>
+                <p className={`text-xs mb-3 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Get weather alerts, market updates & reminders
+                </p>
+                <button
+                  className="btn-primary w-full flex items-center justify-center gap-2"
+                  onClick={() => {
+                    setShowSettings(false)
+                    setShowTelegramConnect(true)
+                  }}
+                >
+                  <MessageCircle size={18} />
+                  Connect Telegram
+                </button>
+              </div>
+
+              <div className={`rounded-2xl px-4 py-3 ${darkMode ? 'bg-gray-900/60' : 'bg-gray-50'}`}>
+                <p className={`text-sm font-semibold mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                   {getTranslation('dashboard.settingsAiShortcut', currentLang)}
                 </p>
                 <button
@@ -650,6 +671,11 @@ Tip must be practical, season-aware if possible, and include an actionable next 
             </div>
           </motion.div>
         </div>
+      )}
+
+      {/* Telegram Connect Modal */}
+      {showTelegramConnect && (
+        <TelegramConnect onClose={() => setShowTelegramConnect(false)} />
       )}
 
       {/* Bottom Navigation */}
